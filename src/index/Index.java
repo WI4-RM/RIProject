@@ -16,7 +16,8 @@ public class Index {
 	
 	// la premierer hashtable contient le token et une liste
 	private Hashtable<String, ArrayList<TokenInformations>> matrice;
-	
+	private int N; //documents number
+	private Hashtable<String,Integer> documentsLength; //
 	
 	//classe interne qui contient des infos sur un documents
 	public class TokenInformations {
@@ -32,12 +33,14 @@ public class Index {
 	
 	public Index(){
 		this.matrice = new Hashtable<String, ArrayList<TokenInformations>>();
+		this.N =0;
+		this.documentsLength = new Hashtable<String, Integer>();
 	}
 
 	/**
-	 * increments the token coccurence in docno
+	 * increments the token occurrence in docno
 	 * @param docno is the document that contains token
-	 * @param token is a token whom occurence will be increased by 1
+	 * @param token is a token whom occurrence will be increased by 1
 	 */
 	public void add(String docno, String token){
 		
@@ -72,6 +75,62 @@ public class Index {
 				System.out.println("\t"+doc.docnName +" : "+ doc.df );
 			}
 		}
+	}
+
+	public void increaseDocNumber() {
+		this.N++;
+		
+	}
+	
+	/**
+	 * 
+	 * @param token
+	 * @return df(token)
+	 */
+	public int getDocumentFrequency(String token){
+		if (this.matrice.containsKey(token)){
+			return matrice.get(token).size(); // size of the list = document frequency
+		}
+		else
+			return 0;
+	}
+	
+	/**
+	 * 
+	 * @param token
+	 * @param docID
+	 * @return tf(token,docID)
+	 */
+	public int getTermFrequencyInDocument(String token, String docID){
+		if (this.matrice.contains(token)){
+			ArrayList<TokenInformations> list = matrice.get(token);
+			for (int i=0;i< list.size();i++){
+				if (list.get(i).docnName.equals(docID)){
+					return list.get(i).df;
+				}
+			}
+
+		}
+		return 0;
+
+	}
+	
+	public int getN(){
+		return N;
+	}
+
+	/**
+	 *  set docno length to length
+	 * @param docno document
+	 * @param length of docno
+	 */
+	public void setDocumentLength(String docno, int length) {
+		this.documentsLength.put(docno, new Integer(length));
+		
+	}
+	
+	public Integer getDocumentLength(String docno) {
+		return this.documentsLength.get(docno);
 	}
 
 }

@@ -22,6 +22,7 @@ public class MyParser implements ParserInterface {
 		while (flux.hasNextDocument()){
 			String doc = flux.nextDocument(); 
 			parseDoc(doc);
+			index.increaseDocNumber();//count total number of document
 		}
 		
 	}
@@ -56,7 +57,7 @@ public class MyParser implements ParserInterface {
 			this.index.add(docno,tokens[i]); // add the token to the index
 		}
 		
-		
+		this.index.setDocumentLength(docno, tokens.length);
 	}
 
 	@Override

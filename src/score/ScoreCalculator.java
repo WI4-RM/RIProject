@@ -7,5 +7,7 @@ package score;
 public interface ScoreCalculator {
 
 	void printResult();
+	
+	public void proceed();
 
 }
