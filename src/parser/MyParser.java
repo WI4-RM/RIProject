@@ -44,7 +44,7 @@ public class MyParser implements ParserInterface {
 		
 		//extraction du titre : 
 		String docno = matcher.group(1);
-		System.out.println("docno : "+docno);
+		//System.out.println("docno : "+docno);
 		
 		//extraction des tokens : 
 		String[] tokens = matcher.group(2).split("\\W+");
@@ -58,6 +58,7 @@ public class MyParser implements ParserInterface {
 		}
 		
 		this.index.setDocumentLength(docno, tokens.length);
+		index.addDocument(docno); // add document to the list		
 	}
 
 	@Override

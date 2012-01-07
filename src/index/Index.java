@@ -14,10 +14,11 @@ import java.util.Iterator;
  */
 public class Index {
 	
-	// la premierer hashtable contient le token et une liste
-	private Hashtable<String, ArrayList<TokenInformations>> matrice;
+	// la premierer hashtable contient le token et une hastable sur nom du document/ information
+	private Hashtable<String, Hashtable<String,TokenInformations>> matrice;
 	private int N; //documents number
-	private Hashtable<String,Integer> documentsLength; //
+	private Hashtable<String,Integer> documentsLength; 
+	private ArrayList<String> documentName; // list of document names
 	
 	//classe interne qui contient des infos sur un documents
 	public class TokenInformations {
@@ -32,9 +33,10 @@ public class Index {
 	}
 	
 	public Index(){
-		this.matrice = new Hashtable<String, ArrayList<TokenInformations>>();
+		this.matrice = new Hashtable<String, Hashtable<String,TokenInformations>>();
 		this.N =0;
 		this.documentsLength = new Hashtable<String, Integer>();
+		this.documentName = new ArrayList<String>();
 	}
 
 	/**
@@ -45,17 +47,17 @@ public class Index {
 	public void add(String docno, String token){
 		
 		if (! matrice.containsKey(token)){//token non encore repertorie
-			ArrayList<TokenInformations> list = new ArrayList<Index.TokenInformations>();//create list
-			list.add(new TokenInformations(docno, 1)); // add a new token in docno
+			Hashtable<String,TokenInformations> list = new Hashtable<String,Index.TokenInformations>();//create hashtable
+			list.put(docno,new TokenInformations(docno, 1)); // add a new token in docno
 			matrice.put(token, list); // add new list to matrice
 		}
 		else {//la matrice contient deja le token
-			ArrayList<TokenInformations> list = matrice.get(token);
-			TokenInformations info = list.get(list.size() -1); //get last document in wich token is found
+			Hashtable<String, TokenInformations> list = matrice.get(token);
+			TokenInformations info = list.get(docno); //get last document in wich token is found
 			
-			if (! info.docnName.equals(docno))//premier occurence de token dans docno
-				list.add(new TokenInformations(docno, 1)); // add a new token in docno			
-			else // ce n'est pas le premiere occurence : 
+			if (info == null)
+				list.put(docno,new TokenInformations(docno, 1)); // add a new token in docno			
+			else  
 				info.df+=1; // incremente le nombre d'occurence de token dans docno
 			matrice.put(token, list);
 		}
@@ -67,11 +69,11 @@ public class Index {
 		while (keys.hasMoreElements())
 		{
 			String token = keys.nextElement();
-			ArrayList<TokenInformations> list = matrice.get(token);
-			Iterator< TokenInformations> it = list.iterator();
+			Hashtable<String,TokenInformations> list = matrice.get(token);
+			Enumeration<String> it = list.keys();
 			System.out.println(token +":" );
-			while (it.hasNext()){
-				TokenInformations doc = it.next();
+			while (it.hasMoreElements()){
+				TokenInformations doc = list.get(it.nextElement());
 				System.out.println("\t"+doc.docnName +" : "+ doc.df );
 			}
 		}
@@ -102,17 +104,13 @@ public class Index {
 	 * @return tf(token,docID)
 	 */
 	public int getTermFrequencyInDocument(String token, String docID){
-		if (this.matrice.contains(token)){
-			ArrayList<TokenInformations> list = matrice.get(token);
-			for (int i=0;i< list.size();i++){
-				if (list.get(i).docnName.equals(docID)){
-					return list.get(i).df;
-				}
-			}
-
+		if (this.matrice.containsKey(token)){
+			Hashtable<String,TokenInformations> list = matrice.get(token);
+			TokenInformations res = list.get(docID);
+			if (res != null)
+				return res.df;
 		}
 		return 0;
-
 	}
 	
 	public int getN(){
@@ -131,6 +129,20 @@ public class Index {
 	
 	public Integer getDocumentLength(String docno) {
 		return this.documentsLength.get(docno);
+	}
+	
+	public Enumeration<TokenInformations> getListIterator(String token){
+		return this.matrice.get(token).elements();
+	}
+
+	public void addDocument(String doc) {
+		this.documentName.add(doc);
+		
+	}
+
+	public ArrayList getDocNameList() {
+		// TODO Auto-generated method stub
+		return this.documentName;
 	}
 
 }

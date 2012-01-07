@@ -6,6 +6,7 @@ import request.RequestInterface;
 import request.RequestOne;
 import score.BM25Score;
 import score.ScoreCalculator;
+import fichier.FLuxReaderTextAscii;
 import fichier.FluxReader;
 import fichier.FluxReaderOne;
 /**
@@ -26,18 +27,21 @@ public class Main {
 		}
 		
 		//open file(s) and prepare them
-		FluxReader flux = new FluxReaderOne(args);
+		FluxReader flux = new FLuxReaderTextAscii(args);
+		System.out.println("file opened !");
 		
 		//create parser
 		ParserInterface parser = new MyParser(flux);
 		parser.parse(); //parse documents
+		System.out.println("parsed !");
 		
-		((MyParser)parser).dump();
+		//((MyParser)parser).dump();
 		//request
 		RequestInterface request = new RequestOne();
 		
 		//score	calculation	
 		ScoreCalculator score = new BM25Score(request,parser.getIndex());
+		score.proceed();
 		score.printResult();
 		
 		

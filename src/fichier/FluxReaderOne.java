@@ -2,7 +2,7 @@ package fichier;
 
 public class FluxReaderOne implements FluxReader {
 
-	private String fileContent;
+	protected String fileContent;
 	
 	//constant field 
 	private final int CLOSEDOCTAGLENGTH = 6; //length of (</doc> )
@@ -12,7 +12,8 @@ public class FluxReaderOne implements FluxReader {
 	 * @param args file names, each file contains several documents
 	 */
 	public FluxReaderOne(String[] args) {
-		this.fileContent = "<doc><docno>432</docno> it !! is, just-A test., a test.</doc><doc><docno>5</docno> it </doc>";
+		this.fileContent = "<doc><docno>432</docno> it benefits is, oil, a test.olive</doc><doc><docno>5</docno> it health</doc>"+
+		"<doc><docno>222</docno> test tes test</doc>";		
 		
 	}
 
@@ -22,7 +23,7 @@ public class FluxReaderOne implements FluxReader {
 		int endOffset = this.fileContent.indexOf("</doc>");
 		
 		String result = this.fileContent.substring(beginOffset, endOffset); // curent doc
-		System.out.println(result);
+		//System.out.println(result);
 		
 		//remove the current document
 		String reste = this.fileContent.substring(endOffset + CLOSEDOCTAGLENGTH);
